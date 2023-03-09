@@ -1,0 +1,82 @@
+l
+// Create React App
+  npx create-react-app my-app
+  cd my-app
+  code .
+  npm start
+// Font Awesome Installation
+ npm install --save @fortawesome/fontawesome-free
+// bootstrap Installation
+  npm i bootstrap
+
+// this.setState({ count: this.props.product.count + 1 });
+this.setState((prevState) => {
+  return { ...prevState, count: this.props.product.count + 1 };
+});
+
+// 3 Phases
+// Mounting Phase
+  constructor(){super()} // initialize date or call data from props
+  componentDidMount(){} // Call BackEnd Server to access Data
+  render (){} // return jsx markup of the component
+// Updating Phase
+  render (){} // return jsx markup of the component
+  componentDidUpdate() 
+// Unmounting Phase
+  componentWillUnmount()
+
+Routes
+  // Step 1 in index.jsx
+    import { BrowserRouter } from "react-router-dom";
+  // step 2 in index.jsx
+    <BrowserRouter>
+      <App/>
+    </BrowserRouter>
+  // step 3 in app.jsx
+    import { Route } from "react-router-dom";
+  // step 4 in app.jsx
+    <Route path="about" element={<About />} />
+    <Route path="contact" element={<Contact />} />
+    <Route path="/" element={<Home />} />
+  // in navbar use <link to= ""> </link>
+  // import {
+      useLocation, // Use location of the pathname
+      useNavigate, // use History
+      useParams, // use parameters paths in path
+      useMatch, //  return params , pathname ,pathnamebase , pattern
+    } from "react-router-dom";
+  const params = useParams(); // to get parameters on the url
+  console.log(params);  
+  const history = useNavigate();  // to get history
+  console.log(history);
+  const locaiton = useLocation(); to get location and path and searh
+  console.log(locaiton);
+  const parsed = queryString.parse(locaiton.search);
+  console.log(parsed);
+  console.log(props);
+  const match = useMatch("/products/:id");  //  return params , pathname ,pathnamebase , pattern
+  console.log(match);
+
+// Library Installation
+// bootstrap
+  npm i react-bootstrap
+// fontAwesome
+  npm i font-awesome
+// React-router-dom
+  npm i react-router-dom
+// Query String
+  npm i query-string
+// joi-browser 
+  npm i joi-browser
+// Axios 
+  npm i axios
+// JSON Server
+  npm install -g json-server
+// Watch DataBase File 
+  npx json-server --watch db.json
+// React toastify
+  npm i react-toastify
+  // 3 steps 
+    import "../node_modules/react-toastify/dist/ReactToastify.css";
+    import { ToastContainer } from "react-toastify/dist/components";
+       <ToastContainer />
