@@ -45,7 +45,7 @@ function AddUser(props) {
 
   // // Handle Submit
   const handleSubmit = async (e) => {
-    // e.preventDefault();
+    e.preventDefault();
     const obj = { username: e.target.username.value };
     await axios
       .post("http://13.49.173.228/shopify/newuser", obj)
@@ -55,6 +55,7 @@ function AddUser(props) {
       .catch((error) => {
         console.error(error);
       });
+    window.location.reload();
   };
   // const handleChange = async (e) => {
   //   // clone

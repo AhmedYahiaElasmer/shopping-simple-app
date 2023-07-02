@@ -22,28 +22,22 @@ function App() {
   const [state, setstate] = useState({
     products: [],
   });
-
-  const Axios = async () => {
+  useEffect(async () => {
     const res = await axios.get("http://13.49.173.228/shopify/getusers");
     const users = res.data;
     setusers(users);
-  };
 
-  useEffect(() => {
-    Axios();
-  }, []);
-  const componentDidMount = async () => {
+    // useEffect(() => {
+
+    // }, []);
+
     const products = await axios.get(
       `http://13.49.173.228/shopify/getallproducts/AED/${users[0]._id}`
     );
 
     setstate({ products: products.data });
-  };
-  console.log(users[0]._id);
-  useEffect(() => {
-    componentDidMount();
+    console.log(users[0]._id);
   }, []);
-  console.log(users);
 
   // Call BackEnd Server
   //  componentDidMount() {
