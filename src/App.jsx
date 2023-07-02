@@ -1,8 +1,8 @@
-import React, { Component, useEffect } from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Route, Routes } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer } from "react-toastify";
-import { toast } from "react-toastify";
+
 //
 import NavBar from "./components/Navbar";
 import ShoppingCart from "./components/ShoppingCart";
@@ -14,35 +14,39 @@ import ProductDetails from "./Pages/ProductDetails";
 import Login from "./components/Login";
 import Admin from "./components/Admin";
 import ProductEdit from "./Pages/ProductEdit";
+import Useres from "./components/Useres";
+import AddUser from "./Pages/AddUser";
 
-class App extends Component {
-  state = {
-    products: [
-      {
-        id: 1,
-        name: "Burger",
-        price: "50",
-        count: 0,
-        isInCart: false,
-      },
-      {
-        id: 2,
-        name: "Fries",
-        price: "30",
-        count: 0,
-        isInCart: false,
-      },
-      {
-        id: 3,
-        name: "water",
-        price: "5",
-        count: 0,
-        isInCart: false,
-      },
-    ],
+function App() {
+  const [users, setusers] = useState();
+  const [state, setstate] = useState({
+    products: [],
+  });
+
+  const Axios = async () => {
+    const res = await axios.get("http://13.49.173.228/shopify/getusers");
+    const users = res.data;
+    setusers(users);
   };
+
+  useEffect(() => {
+    Axios();
+  }, []);
+  const componentDidMount = async () => {
+    const products = await axios.get(
+      `http://13.49.173.228/shopify/getallproducts/AED/${users[0]._id}`
+    );
+
+    setstate({ products: products.data });
+  };
+  console.log(users[0]._id);
+  useEffect(() => {
+    componentDidMount();
+  }, []);
+  console.log(users);
+
   // Call BackEnd Server
-  // async componentDidMount() {
+  //  componentDidMount() {
   // Calling BackEnd with Fetch then
   // fetch("https://jsonplaceholder.typicode.com/posts")
   //   .then((response) => response.json())
@@ -52,42 +56,45 @@ class App extends Component {
   // res.then((data) => console.log(data));
   //
   // Calling BackEnd with Axios
-  //const { data } = await axios.get("http://localhost:3000/products");
+  // const products = await axios.get(
+  //   `http://13.49.173.228/shopify/getallproducts/AED/64a05e4f234f4b27fcdac43f`
+  // );
   // set state
-  //this.setState({ products: data });
-  //}
+  // this.setState({ products });
+
   // Call BackEnd Server with useEffect
-  // useEffect (async ()=> {
-  //   const { data} = await axios.get("http://localhost:3000/products");
+  // useEffect(()=>{
+
   // });
 
   // Edit State When admin Edit
-  AdminEditHandler = (pro) => {
-    if (pro.id <= this.state.products.length) {
-      const products = [...this.state.products];
-      this.setState({ products });
+
+  const AdminEditHandler = (pro) => {
+    if (pro.id <= state.products.length) {
+      const products = [...state.products];
+      setstate({ products });
     } else {
       // clone
-      const products = [...this.state.products, pro];
-      this.setState({ products });
+      const products = [...state.products, pro];
+      setstate({ products });
     }
   };
   // Increment Handler
-  IncrementHandler = (pro) => {
+  const IncrementHandler = (pro) => {
     // clone+
-    const products = [...this.state.products];
+    const products = [...state.products];
     const index = products.indexOf(pro);
     products[index] = { ...products[index] };
     // edit
     products[index].count++;
     // set State
-    this.setState({ products });
+    setstate({ products });
   };
 
   // Decrement Handler
-  DecrementHandler = (pro) => {
+  const DecrementHandler = (pro) => {
     // clone
-    const products = [...this.state.products];
+    const products = [...state.products];
     const index = products.indexOf(pro);
     // edit
     products[index] = {
@@ -95,17 +102,17 @@ class App extends Component {
       count: products[index].count - 1,
     };
     // set state
-    this.setState({ products });
+    setstate({ products });
   };
 
   // Delete Handler (item)
-  AdminDeleteHandler = async (pro) => {
-    const oldState = [...this.state.products];
+  const AdminDeleteHandler = async (pro) => {
+    const oldState = [...state.products];
     // state
     // Clone, Edit
-    const newProducts = this.state.products.filter((p) => p.id !== pro.id);
+    const newProducts = state.products.filter((p) => p.id !== pro.id);
     // Set State
-    this.setState({ products: newProducts });
+    setstate({ products: newProducts });
     // BackEnd delete
     // try {
     //   // call B
@@ -116,111 +123,113 @@ class App extends Component {
     // }
   };
   // Delete Handler (in cart only)
-  DeleteHandler = (pro) => {
+  const DeleteHandler = (pro) => {
     // Clone, Edit
-    const products = [...this.state.products];
+    const products = [...state.products];
     const index = products.indexOf(pro);
     products[index] = {
       ...products[index],
       isInCart: !products[index].isInCart,
     };
     // Set State
-    this.setState({ products });
+    setstate({ products });
   };
   // Reset Handler
-  ResetHandler = () => {
+  const ResetHandler = () => {
     // clone
-    let products = [...this.state.products];
+    let products = [...state.products];
     // edit
     products = products.map((e) => {
       e.count = 0;
       return e;
     });
-    this.setState({ products });
+    setstate({ products });
   };
   // ProductOnChange
-  ProductOnChange = (pro) => {
+  const ProductOnChange = (pro) => {
     // clone
-    const products = [...this.state.products];
+    const products = [...state.products];
     const index = products.indexOf(pro);
     products[index] = {
       ...products[index],
       isInCart: !products[index].isInCart,
     };
     // set state
-    this.setState({ products });
+    setstate({ products });
     // console.log(products);
   };
-  render() {
-    return (
-      <React.Fragment>
-        <ToastContainer />
-        <NavBar
-          productsCount={
-            this.state.products.filter((e) => e.isInCart === true).length
-          }
-        />
-        <main className="container">
-          <Routes>
-            <Route
-              path="admin"
-              element={
-                // <h2>lol</h2>
-                <Admin
-                  products={this.state.products}
-                  DeleteHandler={this.AdminDeleteHandler}
-                />
-              }
-            />
-            <Route
-              path="productEdit/:id"
-              element={
-                <ProductEdit
-                  products={this.state.products}
-                  AdminEditHandler={this.AdminEditHandler}
-                />
-              }
-            />
-            {/* Product Details Route */}
-            <Route
-              path="/products/:id"
-              element={<ProductDetails products={this.state.products} />}
-            />
-            {/* Cart Route */}
-            <Route
-              path="/cart"
-              element={
-                <ShoppingCart
-                  products={this.state.products}
-                  onIncrementHandler={this.IncrementHandler}
-                  onDecrementHandler={this.DecrementHandler}
-                  onDeleteHandler={this.DeleteHandler}
-                  onResetHandler={this.ResetHandler}
-                />
-              }
-            />
-            <Route path="about" element={<About />}>
-              <Route path="team" element={<h2>Our Team</h2>} />
-              <Route path="company" element={<h2>Our company</h2>} />
-            </Route>
-            <Route path="contact" element={<Contact />} />
-            <Route
-              path="/"
-              exact
-              element={
-                <Menu
-                  products={this.state.products}
-                  ProductOnChange={this.ProductOnChange}
-                />
-              }
-            />
-            <Route path="login" element={<Login />} />
-            <Route path="*" element={<NoPagesFound />} />
-          </Routes>
-        </main>
-      </React.Fragment>
-    );
-  }
+
+  return (
+    <React.Fragment>
+      <ToastContainer />
+      <NavBar
+        users={users}
+        productsCount={state.products.filter((e) => e.isInCart === true).length}
+      />
+      <main className="container">
+        <Routes>
+          <Route
+            path="admin"
+            element={
+              // <h2>lol</h2>
+              <Admin
+                products={state.products}
+                DeleteHandler={AdminDeleteHandler}
+              />
+            }
+          />
+          <Route
+            path="productEdit/:id"
+            element={
+              <ProductEdit
+                products={state.products}
+                AdminEditHandler={AdminEditHandler}
+              />
+            }
+          />
+          {/* Product Details Route */}
+          <Route
+            path="/products/:id"
+            element={<ProductDetails products={state.products} />}
+          />
+          {/* Cart Route */}
+          <Route
+            path="/cart"
+            element={
+              <ShoppingCart
+                products={state.products}
+                onIncrementHandler={IncrementHandler}
+                onDecrementHandler={DecrementHandler}
+                onDeleteHandler={DeleteHandler}
+                onResetHandler={ResetHandler}
+              />
+            }
+          />
+          <Route path="about" element={<About />}>
+            <Route path="team" element={<h2>Our Team</h2>} />
+            <Route path="company" element={<h2>Our company</h2>} />
+          </Route>
+          <Route path="contact" element={<Contact />} />
+          <Route
+            path="/"
+            exact
+            element={
+              <Menu
+                products={state.products}
+                ProductOnChange={ProductOnChange}
+              />
+            }
+          />
+          <Route path="login" element={<Login />} />
+          <Route path="useres" element={<Useres />} />
+
+          <Route path="/adduser" element={<AddUser users={users} />} />
+
+          <Route path="*" element={<NoPagesFound />} />
+        </Routes>
+      </main>
+    </React.Fragment>
+  );
 }
 
 export default App;

@@ -1,9 +1,26 @@
 import React from "react";
 import Cart from "./cart";
+import Currancy from "../components/currancy";
 const Menu = (props) => {
   return (
     <React.Fragment>
-      <h1>Menu</h1>
+      <div
+        className="d-flex"
+        style={{
+          flexWrap: "nowrap",
+          alignContent: "space-around",
+          justifyContent: "space-around",
+          alignItems: "center",
+        }}
+      >
+        <div>
+          <h1>Menu</h1>
+        </div>
+        <div className="d-flex">
+          <h5 className="me-2">Currancy </h5> <Currancy />
+        </div>
+      </div>
+
       <div className="table-responsive">
         <table className="table table-sm">
           <thead>
@@ -18,7 +35,7 @@ const Menu = (props) => {
           </thead>
           <tbody>
             {props.products.map((product) => (
-              <tr key={product.id}>
+              <tr key={product._id}>
                 <td scope="row">{product.name}</td>
                 <td>{product.price}</td>
                 <td>

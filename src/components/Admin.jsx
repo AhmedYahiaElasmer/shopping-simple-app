@@ -1,11 +1,27 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import Currancy from "./currancy";
 
 const Admin = (props) => {
   const history = useNavigate();
   return (
     <React.Fragment>
-      <h1>Admin</h1>
+      <div
+        className="d-flex"
+        style={{
+          flexWrap: "nowrap",
+          alignContent: "space-around",
+          justifyContent: "space-around",
+          alignItems: "center",
+        }}
+      >
+        <div>
+          <h1>Admin</h1>
+        </div>
+        <div className="d-flex">
+          <h5 className="me-2">Currancy </h5> <Currancy />
+        </div>
+      </div>
       <button
         className="btn btn-primary"
         onClick={() => {
