@@ -17,6 +17,7 @@ import AddUser from "./Pages/AddUser";
 import { usersidcontext } from "./components/usecontext";
 
 import Orders from "./components/Orders";
+import Addproduct from "./Pages/Addpro";
 
 function App() {
   const { userid } = useContext(usersidcontext);
@@ -295,6 +296,7 @@ function App() {
           <Route path="useres" element={<Useres />} />
           <Route path="/Orders" element={<Orders />} />
           <Route path="/adduser" element={<AddUser users={users} />} />
+          <Route path="/addpro" element={<Addproduct />} />
           <Route path="*" element={<NoPagesFound />} />
         </Routes>
       </main>

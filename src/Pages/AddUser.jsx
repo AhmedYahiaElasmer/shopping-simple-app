@@ -5,45 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 
 function AddUser(props) {
   const [users, setusers] = useState(props.users);
-  // const Axios = async () => {
-  //   const res = await axios.get("http://13.49.173.228/shopify/getusers");
 
-  //   setusers(res.data);
-  // };
-  // useEffect(() => {
-  //   Axios();
-  // }, []);
-  // const params = useParams();
-  // const history = useNavigate();
-  // // Get Data From BackEnd
-  // // useEffect(() => {
-  // //   if (params.id !== "new") {
-  // //     const pro = {
-  // //       ...props.products.filter((e) => e.id === parseInt(params.id))[0],
-  // //     };
-  // //     setState(pro);
-  // //   }
-  // //     const data = axios.get("http://localhost:3000/products");
-  // //     async function getData() {
-  // //       // get data from server
-  // //       if (params.id !== "new") {
-  // //         const { data } = await axios.get(
-  // //           `http://localhost:3000/products/${params.id}`
-  // //         );
-  // //         // clone
-  // //         const newState = { ...state };
-  // //         // edit
-  // //         newState.name = data.name;
-  // //         newState.price = data.price;
-  // //         newState.id = data.id;
-  // //         // setstate
-  // //         setState(newState);
-  // //       }
-  // //     }
-  // //     getData();
-  // // }, []);
-
-  // // Handle Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     const obj = { username: e.target.username.value };
@@ -57,20 +19,10 @@ function AddUser(props) {
       });
     window.location.reload();
   };
-  // const handleChange = async (e) => {
-  //   // clone
-  //   const newstate = { ...users };
-  //   // edit
-  //   newstate[e.target.username] = e.target.value;
 
-  //   setusers({ uesrs: newstate });
-  //   // set state
-  // };
   return (
     <React.Fragment>
-      <h2>
-        {/* {params.id === "new" ? `Add Product` : `Edit Product ${params.id}`} */}
-      </h2>
+      <h2></h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="name">UserName</label>

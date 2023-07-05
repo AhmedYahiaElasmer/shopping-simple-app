@@ -68,6 +68,11 @@ const NavBar = (props) => {
                   add Useres
                 </NavLink>
               </li>
+              <li className="nav-item">
+                <NavLink className="nav-link" style={styled} to="addpro">
+                  add Product
+                </NavLink>
+              </li>
             </ul>
           </div>
           <div className="me-5">
