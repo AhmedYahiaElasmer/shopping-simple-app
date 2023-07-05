@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer } from "react-toastify";
-
-//
 import NavBar from "./components/Navbar";
 import ShoppingCart from "./components/ShoppingCart";
 import About from "./Pages/About";
@@ -16,29 +14,51 @@ import Admin from "./components/Admin";
 import ProductEdit from "./Pages/ProductEdit";
 import Useres from "./components/Useres";
 import AddUser from "./Pages/AddUser";
+import { usersidcontext } from "./components/usecontext";
+
+import Orders from "./components/Orders";
 
 function App() {
+  const { userid } = useContext(usersidcontext);
+  const { currancyvalue } = useContext(usersidcontext);
+  const { chageqty } = useContext(usersidcontext);
+  const { chagprod } = useContext(usersidcontext);
+  const { chagtotal } = useContext(usersidcontext);
+  // console.log(currancyvalue);
   const [users, setusers] = useState();
   const [state, setstate] = useState({
     products: [],
   });
-  useEffect(async () => {
+  const change = (e) => {
+    chageqty(e);
+  };
+  const changeprod = (e) => {
+    chagprod(e);
+  };
+  const changetotal = (e) => {
+    chagtotal(e);
+  };
+  const getusers = async () => {
     const res = await axios.get("http://13.49.173.228/shopify/getusers");
-    const users = res.data;
-    setusers(users);
 
-    // useEffect(() => {
+    setusers(res.data);
+  };
 
-    // }, []);
-
+  const getallproducts = async (e) => {
     const products = await axios.get(
-      `http://13.49.173.228/shopify/getallproducts/AED/${users[0]._id}`
+      `http://13.49.173.228/shopify/getallproducts/${currancyvalue}/${userid}`
     );
-
+    // console.log(products);
     setstate({ products: products.data });
-    console.log(users[0]._id);
-  }, []);
+  };
+  // getallproducts();
 
+  useEffect(() => {
+    getusers();
+    getallproducts();
+  }, [userid, currancyvalue]);
+
+  // console.log(state.products);
   // Call BackEnd Server
   //  componentDidMount() {
   // Calling BackEnd with Fetch then
@@ -73,16 +93,62 @@ function App() {
       setstate({ products });
     }
   };
-  // Increment Handler
-  const IncrementHandler = (pro) => {
-    // clone+
-    const products = [...state.products];
-    const index = products.indexOf(pro);
-    products[index] = { ...products[index] };
+  // Reset Handler
+  const ResetHandler = () => {
+    // clone
+    let products = [...state.products];
     // edit
-    products[index].count++;
-    // set State
+    products = products.map((e) => {
+      e.count = 0;
+      return e;
+    });
     setstate({ products });
+  };
+  // Increment Handler
+  let qty = 0;
+  let total = 0;
+
+  const IncrementHandler = (pro) => {
+    const products = [...state.products];
+    if (products.count === NaN) {
+      // console.log(products.count);
+      ResetHandler();
+    } else {
+      // clone+
+
+      const index = products.indexOf(pro);
+      products[index] = { ...products[index] };
+
+      // edit
+      products[index].count++;
+      // set State
+      setstate({ products });
+      // console.log(products);
+      const newObj = {};
+
+      for (const item of products) {
+        newObj[item._id] = item.count;
+      }
+      // console.log(newObj);
+      let total = 0;
+      for (const item of products) {
+        total += item.count * item.price;
+      }
+
+      let sum = () => {
+        let sum = 0;
+        for (const key in newObj) {
+          sum += newObj[key];
+        }
+        return sum;
+      };
+      qty = sum();
+      change(qty);
+      changeprod(newObj);
+      changetotal(total);
+
+      // console.log(sum());
+    }
   };
 
   // Decrement Handler
@@ -97,6 +163,12 @@ function App() {
     };
     // set state
     setstate({ products });
+    const newObj = {};
+
+    for (const item of products) {
+      newObj[item._id] = item.count;
+    }
+    // console.log(newObj);
   };
 
   // Delete Handler (item)
@@ -128,17 +200,7 @@ function App() {
     // Set State
     setstate({ products });
   };
-  // Reset Handler
-  const ResetHandler = () => {
-    // clone
-    let products = [...state.products];
-    // edit
-    products = products.map((e) => {
-      e.count = 0;
-      return e;
-    });
-    setstate({ products });
-  };
+
   // ProductOnChange
   const ProductOnChange = (pro) => {
     // clone
@@ -155,6 +217,21 @@ function App() {
 
   return (
     <React.Fragment>
+      {/* <ToastContainer /> */}
+      {/*  */}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      {/* Same as */}
       <ToastContainer />
       <NavBar
         users={users}
@@ -169,6 +246,16 @@ function App() {
               <Admin
                 products={state.products}
                 DeleteHandler={AdminDeleteHandler}
+              />
+            }
+          />
+          <Route
+            path="/"
+            exact
+            element={
+              <Menu
+                products={state.products}
+                ProductOnChange={ProductOnChange}
               />
             }
           />
@@ -204,21 +291,10 @@ function App() {
             <Route path="company" element={<h2>Our company</h2>} />
           </Route>
           <Route path="contact" element={<Contact />} />
-          <Route
-            path="/"
-            exact
-            element={
-              <Menu
-                products={state.products}
-                ProductOnChange={ProductOnChange}
-              />
-            }
-          />
           <Route path="login" element={<Login />} />
           <Route path="useres" element={<Useres />} />
-
+          <Route path="/Orders" element={<Orders />} />
           <Route path="/adduser" element={<AddUser users={users} />} />
-
           <Route path="*" element={<NoPagesFound />} />
         </Routes>
       </main>

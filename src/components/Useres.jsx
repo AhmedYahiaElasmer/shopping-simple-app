@@ -3,13 +3,15 @@ import React, { useEffect, useState } from "react";
 import { Button, ListGroup } from "react-bootstrap";
 import { Route, Routes } from "react-router-dom";
 import AddUser from "../Pages/AddUser";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllUsers } from "../redux/actions/appAction";
 
 function Useres() {
-  const [users, setusers] = useState();
-  const Axios = async () => {
-    const res = await axios.get("http://13.49.173.228/shopify/getusers");
+  const dispatch = useDispatch();
 
-    setusers(res.data);
+  const [users, setusers] = useState(useSelector((state) => state.users));
+  const Axios = async () => {
+    dispatch(getAllUsers());
   };
   useEffect(() => {
     Axios();

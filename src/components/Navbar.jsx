@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Dropdown from "react-bootstrap/Dropdown";
 import axios from "axios";
 import { computeHeadingLevel } from "@testing-library/react";
+import { usersidcontext } from "./usecontext";
 
 const NavBar = (props) => {
   const [users, setusers] = useState(props.users);
-
+  const { userid, chageuserid } = useContext(usersidcontext);
+  const change = (e) => {
+    chageuserid(e);
+  };
   const styled = ({ isActive }) =>
     isActive ? { color: "white" } : { color: "#bdbdbd" };
 
@@ -55,6 +59,11 @@ const NavBar = (props) => {
                 </NavLink>
               </li>
               <li className="nav-item">
+                <NavLink className="nav-link" style={styled} to="/Orders">
+                  Orders
+                </NavLink>
+              </li>
+              <li className="nav-item">
                 <NavLink className="nav-link" style={styled} to="adduser">
                   add Useres
                 </NavLink>
@@ -84,14 +93,17 @@ const NavBar = (props) => {
                     style={{ color: "white", fontSize: "2vw" }}
                   ></i>
                 </Dropdown.Toggle>
-
                 <Dropdown.Menu>
                   {props.users &&
                     props.users.map((item) => (
-                      <Dropdown.Item key={item._id}>
+                      <Dropdown.Item
+                        key={item._id}
+                        onClick={() => change(item._id)}
+                      >
                         {item.username}
                       </Dropdown.Item>
                     ))}
+                  {/* {console.log(users)} */}
                 </Dropdown.Menu>
               </Dropdown>
             </div>

@@ -14,7 +14,7 @@ const ProductDetails = (props) => {
   // console.log(product.id);
   const prodct = props.products.filter((p) => p.id === parseInt(params.id))[0];
 
-  console.log("{props.prodct}", prodct);
+  // console.log("{props.prodct}", prodct);
 
   const handleSave = () => {
     navigate("/cart", { replace: true });

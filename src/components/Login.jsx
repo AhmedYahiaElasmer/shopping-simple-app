@@ -34,7 +34,7 @@ const Login = () => {
     // for (const error of res.error.details) {
     //   errors[error.path] = error.message;
     // }
-    console.log(res);
+    // console.log(res);
   };
   return (
     <React.Fragment>
